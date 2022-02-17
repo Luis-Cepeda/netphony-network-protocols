@@ -1,13 +1,16 @@
 package es.tid.pce.pcep.constructs;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 import es.tid.pce.pcep.PCEPProtocolViolationException;
 import es.tid.pce.pcep.objects.Association;
 import es.tid.pce.pcep.objects.AssociationIPv4;
 import es.tid.pce.pcep.objects.AssociationIPv6;
 import es.tid.pce.pcep.objects.LSP;
+import es.tid.pce.pcep.objects.LSPA;
 import es.tid.pce.pcep.objects.MalformedPCEPObjectException;
+import es.tid.pce.pcep.objects.Metric;
 import es.tid.pce.pcep.objects.ObjectParameters;
 import es.tid.pce.pcep.objects.PCEPObject;
 import es.tid.pce.pcep.objects.SRP;
@@ -48,6 +51,7 @@ public class UpdateRequest extends PCEPConstruct
 	public UpdateRequest(byte []bytes, int offset)throws PCEPProtocolViolationException 
 	{
 		associationList=new LinkedList<Association>();
+
 		decode(bytes, offset);
 	}
 	
@@ -64,7 +68,7 @@ public class UpdateRequest extends PCEPConstruct
 			lsp.encode();	
 			length += lsp.getLength();
 		}
-		
+
 		
 		
 		if (associationList != null) {
@@ -86,6 +90,7 @@ public class UpdateRequest extends PCEPConstruct
 		
 		System.arraycopy(lsp.getBytes(), 0, this.getBytes(), offset,lsp.getLength());		
 		offset += lsp.getLength();
+	
 		
 		for (int i = 0; i < associationList.size(); ++i) {
 			System.arraycopy(associationList.get(i).getBytes(), 0, bytes, offset, associationList.get(i).getLength());
@@ -151,6 +156,8 @@ public class UpdateRequest extends PCEPConstruct
 			log.warn("Malformed Update Request Construct. There must be at least one LSP object. Exception will be throwed");
 			throw new PCEPProtocolViolationException();
 		}
+		
+		
 		
 		//Association
 		
@@ -240,10 +247,7 @@ public class UpdateRequest extends PCEPConstruct
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((associationList == null) ? 0 : associationList.hashCode());
-		result = prime * result + ((lsp == null) ? 0 : lsp.hashCode());
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		result = prime * result + ((srp == null) ? 0 : srp.hashCode());
+		result = prime * result + Objects.hash(associationList, lsp, path, srp);
 		return result;
 	}
 
@@ -257,27 +261,8 @@ public class UpdateRequest extends PCEPConstruct
 		if (getClass() != obj.getClass())
 			return false;
 		UpdateRequest other = (UpdateRequest) obj;
-		if (associationList == null) {
-			if (other.associationList != null)
-				return false;
-		} else if (!associationList.equals(other.associationList))
-			return false;
-		if (lsp == null) {
-			if (other.lsp != null)
-				return false;
-		} else if (!lsp.equals(other.lsp))
-			return false;
-		if (path == null) {
-			if (other.path != null)
-				return false;
-		} else if (!path.equals(other.path))
-			return false;
-		if (srp == null) {
-			if (other.srp != null)
-				return false;
-		} else if (!srp.equals(other.srp))
-			return false;
-		return true;
+		return Objects.equals(associationList, other.associationList) && Objects.equals(lsp, other.lsp)
+				&& Objects.equals(path, other.path) && Objects.equals(srp, other.srp);
 	}
 
 
@@ -287,7 +272,11 @@ public class UpdateRequest extends PCEPConstruct
 				+ "]";
 	}
 
+	
+	
 
+
+	
 	
 	
 	

@@ -34,8 +34,10 @@ public class PCEPInitiate extends PCEPMessage
 {
 
 	protected LinkedList<PCEPIntiatedLSP> pcepIntiatedLSPList; 
+
 	private static final Logger log = LoggerFactory.getLogger("PCEPParser");
 
+	
 	public PCEPInitiate()
 	{
 		this.setMessageType(PCEPMessageTypes.MESSAGE_INITIATE);

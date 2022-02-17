@@ -15,6 +15,7 @@ import es.tid.pce.pcep.objects.tlvs.OpConfAssocRangeTLV;
 import es.tid.pce.pcep.objects.tlvs.PCEPTLV;
 import es.tid.pce.pcep.objects.tlvs.PCE_ID_TLV;
 import es.tid.pce.pcep.objects.tlvs.PCE_Redundancy_Group_Identifier_TLV;
+import es.tid.pce.pcep.objects.tlvs.PathProtectionAssociationTLV;
 import es.tid.pce.pcep.objects.tlvs.SRCapabilityTLV;
 import es.tid.pce.pcep.objects.tlvs.SRPolicyCandidatePathIdentifiersTLV;
 import es.tid.pce.pcep.objects.tlvs.SRPolicyCandidatePathNameTLV;
@@ -149,10 +150,12 @@ public class AssociationIPv4 extends Association {
 	private int assocID=0;
 
 	private Inet4Address associationSource;
-
+	
 	private GlobalAssociationSourceTLV global_association_source_tlv=null;
 
 	private ExtendedAssociationIDTLV extended_ssociation_id_tlv=null;
+	
+	private PathProtectionAssociationTLV pathProtectionAssoTLV = null;
 	
 	private SRPolicyCandidatePathNameTLV sr_policy_candidate_path_tlv=null;
 	
@@ -185,6 +188,10 @@ public class AssociationIPv4 extends Association {
 			extended_ssociation_id_tlv.encode();
 			ObjectLength=ObjectLength+extended_ssociation_id_tlv.getTotalTLVLength();
 		}
+		if(pathProtectionAssoTLV != null) {
+			pathProtectionAssoTLV.encode();
+			ObjectLength=ObjectLength + pathProtectionAssoTLV.getTotalTLVLength();
+		}
 		if(sr_policy_candidate_path_tlv!=null) {
 			sr_policy_candidate_path_tlv.encode();
 			ObjectLength=ObjectLength+sr_policy_candidate_path_tlv.getTotalTLVLength();
@@ -201,6 +208,7 @@ public class AssociationIPv4 extends Association {
 			sr_policy_name.encode();
 			ObjectLength=ObjectLength+sr_policy_name.getTotalTLVLength();
 		}
+		
 		
 		this.object_bytes=new byte[ObjectLength];
 		encode_header();
@@ -220,11 +228,17 @@ public class AssociationIPv4 extends Association {
 			System.arraycopy(global_association_source_tlv.getTlv_bytes(),0,this.object_bytes,offset,global_association_source_tlv.getTotalTLVLength());
 			offset=offset+global_association_source_tlv.getTotalTLVLength();
 		}
+		if(pathProtectionAssoTLV!=null) {
+			System.arraycopy(pathProtectionAssoTLV.getTlv_bytes(), 0, this.object_bytes, offset, pathProtectionAssoTLV.getTotalTLVLength());
+			offset = offset + pathProtectionAssoTLV.getTotalTLVLength();
+		}
+		
 		if (extended_ssociation_id_tlv!=null) {
 			System.arraycopy(extended_ssociation_id_tlv.getTlv_bytes(),0,this.object_bytes,offset,extended_ssociation_id_tlv.getTotalTLVLength());
 			offset=offset+extended_ssociation_id_tlv.getTotalTLVLength();
 
 		}
+		
 		if(sr_policy_candidate_path_tlv!=null) {
 			System.arraycopy(sr_policy_candidate_path_tlv.getTlv_bytes(),0,this.object_bytes,offset,sr_policy_candidate_path_tlv.getTotalTLVLength());
 			offset=offset+sr_policy_candidate_path_tlv.getTotalTLVLength();
@@ -272,6 +286,9 @@ public class AssociationIPv4 extends Association {
 					break;
 				case ObjectParameters.PCEP_TLV_EXTENDED_ASSOCIATION_ID:
 					extended_ssociation_id_tlv=new ExtendedAssociationIDTLV(this.getObject_bytes(), offset);
+					break;
+				case ObjectParameters.PCEP_TLV_PATH_PROTECTION_ASSOCIATION:
+					pathProtectionAssoTLV = new PathProtectionAssociationTLV(this.getObject_bytes(),offset);
 					break;
 				case ObjectParameters.PCEP_TLV_SRPOLICY_POL_NAME:
 					sr_policy_name = new SRPolicyName(this.getObject_bytes(),offset);
@@ -390,12 +407,20 @@ public class AssociationIPv4 extends Association {
 		this.sr_policy_name = sr_policy_name;
 	}
 
+	public PathProtectionAssociationTLV getPathProtectionAssoTLV() {
+		return pathProtectionAssoTLV;
+	}
+
+	public void setPathProtectionAssoTLV(PathProtectionAssociationTLV pathProtectionAssoTLV) {
+		this.pathProtectionAssoTLV = pathProtectionAssoTLV;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + Objects.hash(assocID, assocType, associationSource, extended_ssociation_id_tlv,
-				global_association_source_tlv, removal, sr_policy_candidate_path_identifiers_tlv,
+				global_association_source_tlv, pathProtectionAssoTLV, removal, sr_policy_candidate_path_identifiers_tlv,
 				sr_policy_candidate_path_preference_tlv, sr_policy_candidate_path_tlv, sr_policy_name);
 		return result;
 	}
@@ -413,7 +438,7 @@ public class AssociationIPv4 extends Association {
 				&& Objects.equals(associationSource, other.associationSource)
 				&& Objects.equals(extended_ssociation_id_tlv, other.extended_ssociation_id_tlv)
 				&& Objects.equals(global_association_source_tlv, other.global_association_source_tlv)
-				&& removal == other.removal
+				&& Objects.equals(pathProtectionAssoTLV, other.pathProtectionAssoTLV) && removal == other.removal
 				&& Objects.equals(sr_policy_candidate_path_identifiers_tlv,
 						other.sr_policy_candidate_path_identifiers_tlv)
 				&& Objects.equals(sr_policy_candidate_path_preference_tlv,
@@ -427,10 +452,10 @@ public class AssociationIPv4 extends Association {
 		return "AssociationIPv4 [removal=" + removal + ", assocType=" + assocType + ", assocID=" + assocID
 				+ ", associationSource=" + associationSource + ", global_association_source_tlv="
 				+ global_association_source_tlv + ", extended_ssociation_id_tlv=" + extended_ssociation_id_tlv
-				+ ", sr_policy_candidate_path_tlv=" + sr_policy_candidate_path_tlv
-				+ ", sr_policy_candidate_path_identifiers_tlv=" + sr_policy_candidate_path_identifiers_tlv
-				+ ", sr_policy_candidate_path_preference_tlv=" + sr_policy_candidate_path_preference_tlv
-				+ ", sr_policy_name=" + sr_policy_name + "]";
+				+ ", pathProtectionAssoTLV=" + pathProtectionAssoTLV + ", sr_policy_candidate_path_tlv="
+				+ sr_policy_candidate_path_tlv + ", sr_policy_candidate_path_identifiers_tlv="
+				+ sr_policy_candidate_path_identifiers_tlv + ", sr_policy_candidate_path_preference_tlv="
+				+ sr_policy_candidate_path_preference_tlv + ", sr_policy_name=" + sr_policy_name + "]";
 	}
 
 	

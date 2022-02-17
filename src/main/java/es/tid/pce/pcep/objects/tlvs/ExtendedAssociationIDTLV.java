@@ -114,9 +114,15 @@ public class ExtendedAssociationIDTLV extends PCEPTLV
 	{
 		log.debug("Encoding ExtendedAssociationIDTLV TLV");
 		//length
+		if(endpoint == null)
+		{
+			log.warn("HA ENTRADO EN NULO");
+			this.setTLVValueLength(4);
+		}
 		if(endpoint instanceof java.net.Inet4Address) {
 			this.setTLVValueLength(8);
-		}else {
+		}
+		if (endpoint instanceof java.net.Inet6Address){
 			this.setTLVValueLength(20);
 		}
 		
@@ -125,13 +131,16 @@ public class ExtendedAssociationIDTLV extends PCEPTLV
 		int offset=4;
 		ByteHandler.encode4bytesLong(color,this.tlv_bytes,offset);
 		
-		offset+=4;
-		
-		if(endpoint instanceof java.net.Inet4Address) {
-			System.arraycopy(endpoint.getAddress(),0,this.tlv_bytes,offset,4);
-		}else {
-			System.arraycopy(endpoint.getAddress(),0,this.tlv_bytes,offset,16);
+		if(endpoint != null) {
+			offset+=4;
+			
+			if(endpoint instanceof java.net.Inet4Address) {
+				System.arraycopy(endpoint.getAddress(),0,this.tlv_bytes,offset,4);
+			}else {
+				System.arraycopy(endpoint.getAddress(),0,this.tlv_bytes,offset,16);
+			}
 		}
+		
 		
 	}
 

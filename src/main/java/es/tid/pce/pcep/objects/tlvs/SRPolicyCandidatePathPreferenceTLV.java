@@ -85,7 +85,7 @@ public class SRPolicyCandidatePathPreferenceTLV extends PCEPTLV{
 	@Override
 	public void encode() {
 		log.debug("Encoding PolicyCandidatePathPreference TLV");
-		this.setTLVValueLength(8);
+		this.setTLVValueLength(4);
 		this.tlv_bytes=new byte[this.getTotalTLVLength()];
 		this.encodeHeader();
 		int offset=4;

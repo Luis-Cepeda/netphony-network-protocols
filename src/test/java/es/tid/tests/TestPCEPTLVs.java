@@ -73,7 +73,8 @@ public class TestPCEPTLVs {
     			{"es.tid.pce.pcep.objects.tlvs.ASSOCTypeListTLV"}, //  35	ASSOC-Type-List	[RFC8697]					 
 //    					36	AUTO-BANDWIDTH-CAPABILITY	[RFC8733]
 //    					37	AUTO-BANDWIDTH-ATTRIBUTES	[RFC8733]
-//    					38	Path Protection Association Group TLV	[RFC8745]
+    			{"es.tid.pce.pcep.objects.tlvs.PathProtectionAssociationTLV"}, //   38	Path Protection Association Group TLV	[RFC8745]
+    			
     			{"es.tid.pce.pcep.objects.tlvs.EndPointIPv4TLV"}, //	39	IPV4-ADDRESS	[RFC8779, Section 2.5.2.1]    			    			
 //    					40	IPV6-ADDRESS	[RFC8779, Section 2.5.2.2]    					
     			{"es.tid.pce.pcep.objects.tlvs.UnnumberedEndpointTLV"}, //	41	UNNUMBERED-ENDPOINT	[RFC8779, Section 2.5.2.3]    			    			

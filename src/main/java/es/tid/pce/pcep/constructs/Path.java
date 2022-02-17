@@ -269,6 +269,7 @@ public class Path extends PCEPConstruct {
 		int ot=PCEPObject.getObjectType(bytes, offset);
 		//The first thing is the intended-path (an ERO)
 		log.info("Checking Intended Path: looking for ERO");
+		log.info("OC= " + oc);
 		if (oc==ObjectParameters.PCEP_OBJECT_CLASS_ERO){
 			try {
 				ero=new ExplicitRouteObject(bytes,offset);
@@ -281,6 +282,7 @@ public class Path extends PCEPConstruct {
 		
 		oc=PCEPObject.getObjectClass(bytes, offset);
 		ot=PCEPObject.getObjectType(bytes, offset);
+		log.info("OC= " + oc);
 		// Actual Bandwidth (opcional)
 		log.info("Checking for actual bandwidth: looking for BANDWIDTH");
 		try {
@@ -348,6 +350,7 @@ public class Path extends PCEPConstruct {
 		log.info("Checking for actual METRIC: looking for METRIC");
 		//Actual metrics
 		oc=PCEPObject.getObjectClass(bytes, offset);
+		log.info("OC= " + oc);
 		while (oc==ObjectParameters.PCEP_OBJECT_CLASS_METRIC){
 			Metric metric;
 			try {
@@ -392,7 +395,7 @@ public class Path extends PCEPConstruct {
 			offset=offset+of.getLength();
 			len=len+of.getLength();
 		}
-		log.info ("Checking LSPA");
+		log.info ("Checking LSPA oc= " + oc);
 		oc=PCEPObject.getObjectClass(bytes, offset);		
 		if (oc==ObjectParameters.PCEP_OBJECT_CLASS_LSPA){
 			try {
@@ -493,6 +496,7 @@ public class Path extends PCEPConstruct {
 
 		//Metric
 		oc=PCEPObject.getObjectClass(bytes, offset);
+		log.info("AQUI LLEGO OC= " + oc);
 		while (oc==ObjectParameters.PCEP_OBJECT_CLASS_METRIC){
 			Metric metric;
 			try {
@@ -511,6 +515,7 @@ public class Path extends PCEPConstruct {
 			oc=PCEPObject.getObjectClass(bytes, offset);
 		}
 		oc=PCEPObject.getObjectClass(bytes, offset);
+		log.info("oc = " + oc);
 		if (oc==ObjectParameters.PCEP_OBJECT_CLASS_IRO){
 			try {
 				iro=new IncludeRouteObject(bytes,offset);

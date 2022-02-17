@@ -929,6 +929,8 @@ public final class ObjectParameters {
     */	
 	public static final int PCEP_TLV_AUTO_BANDWIDTH_ATTRIBUTES=37;
 	
+	public static final int PCEP_TLV_PATH_PROTECTION_ASSOCIATION =38;
+	
     /**
      * 38	Path Protection Association Group TLV	[RFC8745]
      */

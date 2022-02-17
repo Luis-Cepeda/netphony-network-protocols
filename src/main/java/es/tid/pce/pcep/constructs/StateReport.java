@@ -195,6 +195,7 @@ public class StateReport extends PCEPConstruct
 			throw new PCEPProtocolViolationException();
 		}
 		
+		
 		//Association
 			
 				oc = PCEPObject.getObjectClass(bytes, offset);
@@ -225,6 +226,15 @@ public class StateReport extends PCEPConstruct
 					ot = PCEPObject.getObjectType(bytes, offset);
 				}
 				log.debug("Voy a ver el ERO, oc "+oc+" offset "+offset +"OT: "+ ot);
+
+				if (PCEPObject.getObjectClass(bytes, offset)==34) {
+					offset+=PCEPObject.getObjectLength(bytes, offset);
+					len +=PCEPObject.getObjectLength(bytes, offset);
+					if (offset>=bytes.length){
+						this.setLength(len);
+						return;
+						}
+				}
 		if (PCEPObject.getObjectClass(bytes, offset)==ObjectParameters.PCEP_OBJECT_CLASS_ERO)
 		{
 			path=new Path(bytes,offset);
@@ -240,14 +250,7 @@ public class StateReport extends PCEPConstruct
 			log.warn("Malformed Report Message. There must be at least one ERO or SRERO message!");
 			//throw new PCEPProtocolViolationException();
 		}
-		if (PCEPObject.getObjectClass(bytes, offset)==34) {
-			offset+=PCEPObject.getObjectLength(bytes, offset);
-			len +=PCEPObject.getObjectLength(bytes, offset);
-			if (offset>=bytes.length){
-				this.setLength(len);
-				return;
-				}
-		}
+		
 		
 		
 		this.setLength(len);

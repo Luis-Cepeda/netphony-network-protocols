@@ -138,7 +138,7 @@ public class SRPolicyCandidatePathIdentifiersTLV extends PCEPTLV{
 
 	@Override
 	public void encode() {
-		this.setTLVValueLength(32);
+		this.setTLVValueLength(28);
 		this.tlv_bytes=new byte[this.getTotalTLVLength()];
 		this.encodeHeader();
 		int offset=4;

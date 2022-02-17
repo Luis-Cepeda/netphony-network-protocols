@@ -20,6 +20,7 @@ import es.tid.pce.pcep.objects.EndPointsUnnumberedIntf;
 import es.tid.pce.pcep.objects.ExplicitRouteObject;
 import es.tid.pce.pcep.objects.GeneralizedEndPoints;
 import es.tid.pce.pcep.objects.LSP;
+import es.tid.pce.pcep.objects.LSPA;
 import es.tid.pce.pcep.objects.MalformedPCEPObjectException;
 import es.tid.pce.pcep.objects.Metric;
 import es.tid.pce.pcep.objects.ObjectParameters;
@@ -52,6 +53,7 @@ import es.tid.pce.pcep.objects.SRP;
 public class PCEPIntiatedLSP extends PCEPConstruct {
 
 	private SRP srp;
+	
 	private LSP lsp;
 	
 	private ExplicitRouteObject ero;
@@ -66,6 +68,16 @@ public class PCEPIntiatedLSP extends PCEPConstruct {
 	private LinkedList<Metric> metricList;
 
 	private Bandwidth bandwidth;
+	
+	private LSPA lspa;
+
+	public LSPA getLspa() {
+		return lspa;
+	}
+
+	public void setLspa(LSPA lspa) {
+		this.lspa = lspa;
+	}
 
 	public Bandwidth getBandwidth() {
 		return bandwidth;
@@ -119,6 +131,11 @@ public class PCEPIntiatedLSP extends PCEPConstruct {
 				len = len + (associationList.get(i)).getLength();
 			}
 		}
+		
+		if(lspa != null) {
+			lspa.encode();
+			len += lspa.getLength();
+		}
 
 		if (bandwidth != null) {
 			bandwidth.encode();
@@ -151,6 +168,10 @@ public class PCEPIntiatedLSP extends PCEPConstruct {
 		for (int i = 0; i < associationList.size(); ++i) {
 			System.arraycopy(associationList.get(i).getBytes(), 0, bytes, offset, associationList.get(i).getLength());
 			offset = offset + associationList.get(i).getLength();
+		}
+		if(lspa != null) {
+			System.arraycopy(lspa.getBytes(), 0, this.getBytes(), offset, lspa.getLength());
+			offset = offset + lspa.getLength();
 		}
 		if (bandwidth != null) {
 			System.arraycopy(bandwidth.getBytes(), 0, bytes, offset, bandwidth.getLength());
@@ -331,6 +352,20 @@ public class PCEPIntiatedLSP extends PCEPConstruct {
 			}
 			oc = PCEPObject.getObjectClass(bytes, offset);
 		}
+
+		
+		
+			oc = PCEPObject.getObjectClass(bytes, offset);
+			if(oc == ObjectParameters.PCEP_OBJECT_CLASS_LSPA) {
+				try {
+				lspa = new LSPA(bytes, offset);
+				}catch (MalformedPCEPObjectException e) {
+					log.warn("Malformed LSPA Object found");
+					throw new PCEPProtocolViolationException();
+				}
+				offset = offset + lspa.getLength();
+				len += lspa.getLength();
+			}
 		
 
 		// Bandwidth
